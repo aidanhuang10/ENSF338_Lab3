@@ -41,16 +41,12 @@ def binaryInsertionSort(Array):
             j = j-1
         # Inserting 'key' in its correct position.
         Array[pos] = key
+#Input sizes
+attempt_list = [10, 20, 40, 80, 160, 320]
 
+
+vector1 = []
 #Testing each sorting algorithm with small but increasing sample size
-vector1 = random.sample(range(0, 10000), 100)
-vector2 = random.sample(range(0, 10000), 200)
-vector3 = random.sample(range(0, 10000), 400)
-vector4 = random.sample(range(0, 10000), 800)
-vector5 = random.sample(range(0, 10000), 1600)
-vector6 = random.sample(range(0, 10000), 3200)
-
-attempt_list = [100, 200, 400, 800, 1600, 3200]
 
 time_vector1_list = []
 time_vector2_list = []
@@ -60,18 +56,25 @@ time_vector5_list = []
 time_vector6_list = []
 
 for i in range(1000):
-    time_vector1 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=100)
-    time_vector1_list.append(time_vector1)
-    time_vector2 = timeit.timeit(lambda: binaryInsertionSort(vector2), number=100)
-    time_vector2_list.append(time_vector2)
-    time_vector3 = timeit.timeit(lambda: binaryInsertionSort(vector3), number=100)
-    time_vector3_list.append(time_vector3)
-    time_vector4 = timeit.timeit(lambda: binaryInsertionSort(vector4), number=100)
-    time_vector4_list.append(time_vector4)
-    time_vector5 = timeit.timeit(lambda: binaryInsertionSort(vector5), number=100)
-    time_vector5_list.append(time_vector5)
-    time_vector6 = timeit.timeit(lambda: binaryInsertionSort(vector6), number=100)
-    time_vector6_list.append(time_vector6)
+    for x in range(100):
+        vector1 = random.sample(range(0, 10000), 10)
+        time_vector1 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector1_list.append(time_vector1)
+        vector1 = random.sample(range(0, 10000), 20)
+        time_vector2 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector2_list.append(time_vector2)
+        vector1 = random.sample(range(0, 10000), 40)
+        time_vector3 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector3_list.append(time_vector3)
+        vector1 = random.sample(range(0, 10000), 80)
+        time_vector4 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector4_list.append(time_vector4)
+        vector1 = random.sample(range(0, 10000), 160)
+        time_vector5 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector5_list.append(time_vector5)
+        vector1 = random.sample(range(0, 10000), 320)
+        time_vector6 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
+        time_vector6_list.append(time_vector6)
 
 avg_binary_insertion = []
 avg_binary_insertion.append(sum(time_vector1_list) / len(time_vector1_list))
@@ -81,7 +84,6 @@ avg_binary_insertion.append(sum(time_vector4_list) / len(time_vector4_list))
 avg_binary_insertion.append(sum(time_vector5_list) / len(time_vector5_list))
 avg_binary_insertion.append(sum(time_vector6_list) / len(time_vector6_list))  
 
-
 time_vector1_list = []
 time_vector2_list = []
 time_vector3_list = []
@@ -90,18 +92,25 @@ time_vector5_list = []
 time_vector6_list = []
 
 for i in range(1000):
-    time_vector1 = timeit.timeit(lambda: insertionSort(vector1), number=100)
-    time_vector1_list.append(time_vector1)
-    time_vector2 = timeit.timeit(lambda: insertionSort(vector2), number=100)
-    time_vector2_list.append(time_vector2)
-    time_vector3 = timeit.timeit(lambda: insertionSort(vector3), number=100)
-    time_vector3_list.append(time_vector3)
-    time_vector4 = timeit.timeit(lambda: insertionSort(vector4), number=100)
-    time_vector4_list.append(time_vector4)
-    time_vector5 = timeit.timeit(lambda: insertionSort(vector5), number=100)
-    time_vector5_list.append(time_vector5)
-    time_vector6 = timeit.timeit(lambda: insertionSort(vector6), number=100)
-    time_vector6_list.append(time_vector6)
+    for x in range(100):
+        vector1 = random.sample(range(0, 10000), 10)
+        time_vector1 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector1_list.append(time_vector1)
+        vector1 = random.sample(range(0, 10000), 20)
+        time_vector2 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector2_list.append(time_vector2)
+        vector1 = random.sample(range(0, 10000), 40)
+        time_vector3 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector3_list.append(time_vector3)
+        vector1 = random.sample(range(0, 10000), 80)
+        time_vector4 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector4_list.append(time_vector4)
+        vector1 = random.sample(range(0, 10000), 160)
+        time_vector5 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector5_list.append(time_vector5)
+        vector1 = random.sample(range(0, 10000), 320)
+        time_vector6 = timeit.timeit(lambda: insertionSort(vector1), number=1)
+        time_vector6_list.append(time_vector6)
 
 avg_insertion_list = []
 avg_insertion_list.append(sum(time_vector1_list) / len(time_vector1_list))
