@@ -8,29 +8,22 @@ def bubbleSort(a,len):
             if a[x] > a[x+1]:
                 swaps = True
                 (a[x],a[x+1]) = (a[x+1],a[x])
-        if swaps == True:
+        if swaps == False:
             break
-def partition(a, low, high):
-    pivot = a[low]
-    left = low+1
-    right = high
-    done = False
-    while not done:
-        while left <= right and a[left] <= pivot:
-            left = left +1
-        while a[right] >= pivot and right >= left:
-            right = right - 1
-        if right < left:
-            done = True
-        else:
-            a[left],a[right] = a[right],a[left]
-    a[low],a[right] = a[right],a[low]
-    return right
+def partition(a,low,high):
+    pivot = a[high]
+    i = low-1
+    for x in range(low,high):
+        if a[x] <= pivot:
+            i = i+1
+            (a[i],a[x]) = (a[x], a[i])
+    (a[i+1],a[high]) = (a[high],a[i+1])
+    return i+1
 def quickSort(a,low,high):
-    if low < high:
-        pivot = partition(a,low,high)
-        quickSort(a,low,pivot)
-        quickSort(a,pivot+1,high)
+    if low<high:
+        part = partition(a,low,high)
+        quickSort(a,low,part-1)
+        quickSort(a,part+1,high)
 #sizes of choice: 2,4,6,8,10,12,14,16,18,20,25,30,35,40,45,50,75,100,125,150
 bestBubble = []
 worstBubble = []
@@ -73,6 +66,9 @@ plt.title("Comparison of Bubble and Quick sort worst cases")
 plt.legend(["Bubble","Quick"])
 plt.savefig("ex2.worstCases.png")
 plt.clf()
+#question 4:
+#looking at the plots, in all but the best cases it appears that quick sort becomes faster
+#than bubble sort around 10 elements, so a small sort would have 9 or less elements 
 
 
 
