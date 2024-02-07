@@ -41,109 +41,79 @@ def binaryInsertionSort(Array):
             j = j-1
         # Inserting 'key' in its correct position.
         Array[pos] = key
-#Input sizes
-attempt_list = [10, 20, 40, 80, 160, 320]
 
+#Generating a list of size X with random numbers in each element
+def listGeneratorOfSize(size):
+    vector = random.sample(range(0, 10000), size)
+    return vector
 
-vector1 = []
-#Testing each sorting algorithm with small but increasing sample size
+#Creates empty list for calculating average time of X number(s) of inputs
+def emptyListCreator(num):
+    vector = []
+    for x in range(num):
+        vector.append([])
+    return vector
 
-time_vector1_list = []
-time_vector2_list = []
-time_vector3_list = []
-time_vector4_list = []
-time_vector5_list = []
-time_vector6_list = []
-
-for i in range(1000):
-    for x in range(100):
-        vector1 = random.sample(range(0, 10000), 10)
-        time_vector1 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector1_list.append(time_vector1)
-        vector1 = random.sample(range(0, 10000), 20)
-        time_vector2 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector2_list.append(time_vector2)
-        vector1 = random.sample(range(0, 10000), 40)
-        time_vector3 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector3_list.append(time_vector3)
-        vector1 = random.sample(range(0, 10000), 80)
-        time_vector4 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector4_list.append(time_vector4)
-        vector1 = random.sample(range(0, 10000), 160)
-        time_vector5 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector5_list.append(time_vector5)
-        vector1 = random.sample(range(0, 10000), 320)
-        time_vector6 = timeit.timeit(lambda: binaryInsertionSort(vector1), number=1)
-        time_vector6_list.append(time_vector6)
-
-avg_binary_insertion = []
-avg_binary_insertion.append(sum(time_vector1_list) / len(time_vector1_list))
-avg_binary_insertion.append(sum(time_vector2_list) / len(time_vector2_list))
-avg_binary_insertion.append(sum(time_vector3_list) / len(time_vector3_list))
-avg_binary_insertion.append(sum(time_vector4_list) / len(time_vector4_list))
-avg_binary_insertion.append(sum(time_vector5_list) / len(time_vector5_list))
-avg_binary_insertion.append(sum(time_vector6_list) / len(time_vector6_list))  
-
-time_vector1_list = []
-time_vector2_list = []
-time_vector3_list = []
-time_vector4_list = []
-time_vector5_list = []
-time_vector6_list = []
-
-for i in range(1000):
-    for x in range(100):
-        vector1 = random.sample(range(0, 10000), 10)
-        time_vector1 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector1_list.append(time_vector1)
-        vector1 = random.sample(range(0, 10000), 20)
-        time_vector2 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector2_list.append(time_vector2)
-        vector1 = random.sample(range(0, 10000), 40)
-        time_vector3 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector3_list.append(time_vector3)
-        vector1 = random.sample(range(0, 10000), 80)
-        time_vector4 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector4_list.append(time_vector4)
-        vector1 = random.sample(range(0, 10000), 160)
-        time_vector5 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector5_list.append(time_vector5)
-        vector1 = random.sample(range(0, 10000), 320)
-        time_vector6 = timeit.timeit(lambda: insertionSort(vector1), number=1)
-        time_vector6_list.append(time_vector6)
-
-avg_insertion_list = []
-avg_insertion_list.append(sum(time_vector1_list) / len(time_vector1_list))
-avg_insertion_list.append(sum(time_vector2_list) / len(time_vector2_list))
-avg_insertion_list.append(sum(time_vector3_list) / len(time_vector3_list))
-avg_insertion_list.append(sum(time_vector4_list) / len(time_vector4_list))
-avg_insertion_list.append(sum(time_vector5_list) / len(time_vector5_list))
-avg_insertion_list.append(sum(time_vector6_list) / len(time_vector6_list))
-
-# 3)
-
-# Linear data curve fitting
-slope, intercept = np.polyfit(attempt_list, avg_insertion_list, 1)
-plt.scatter(attempt_list, avg_insertion_list)
-linevalues = [slope * x + intercept for x in attempt_list]
-plt.plot(attempt_list, linevalues, 'r')
-plt.savefig("insertion.5.3.jpg")
-plt.clf()
-
-#Function for fitting logarithmic data curve fitting
+#Function for fitting quadratic data curve fitting
 def func(x, a, b):
     return a * np.square(x) + b
 
-popt, pcov = scipy.optimize.curve_fit(func, attempt_list, avg_binary_insertion)
+SIZE_LIST = [10, 20, 40, 80, 160, 320] #Sizes for sorting a certain list
+RUNS = 100  #Constant number of runs for lambda function
+
+#Making a list of empty lists of however many input sizes
+time_vectors = emptyListCreator(len(SIZE_LIST))
+
+#Testing binary Insertion Sorting algorithm with small but increasing input size
+for i in range(100):
+    index = 0
+    for array in time_vectors:
+        time = timeit.timeit(lambda: binaryInsertionSort(listGeneratorOfSize(SIZE_LIST[index])), number=RUNS)
+        array.append(time)
+        index += 1
+
+#Calculating average time for each input size for binary insertion sort
+avg_binary_insertion = []
+for i in range(len(SIZE_LIST)):
+    avg_binary_insertion.append(sum(time_vectors[i]) / len(time_vectors[i]))
+
+#Empty the list to use it for Insertion now
+time_vectors = emptyListCreator(len(SIZE_LIST))
+
+#Testing Insertion Sorting algorithm with small but increasing input size
+for i in range(100):
+    index = 0
+    for array in time_vectors:
+        time = timeit.timeit(lambda: insertionSort(listGeneratorOfSize(SIZE_LIST[index])), number=RUNS)
+        array.append(time)
+        index += 1
+
+#Calculating average time for each input size for insertion sort
+avg_insertion_list = []
+for i in range(len(SIZE_LIST)):
+    avg_insertion_list.append(sum(time_vectors[i]) / len(time_vectors[i]))
+
+popt, pcov = scipy.optimize.curve_fit(func, SIZE_LIST, avg_insertion_list)
 
 # Plotting the data and the fitted curve
-plt.scatter(attempt_list, avg_binary_insertion, label='Binary Insertion Sort')
+plt.scatter(SIZE_LIST, avg_insertion_list, label='Insertion Sort')
 
 # Plot the fitted curve
-x_values = np.linspace(min(attempt_list), max(attempt_list), 100)
+x_values = np.linspace(min(SIZE_LIST), max(SIZE_LIST), 100)
 fitted_curve = func(x_values, *popt)
-plt.plot(x_values, fitted_curve, 'r-')
-plt.legend()
-plt.savefig("binaryInsertion.5.3.jpg")
+plt.plot(x_values, fitted_curve, 'b')
 
-#4) 
+popt2, pcov2 = scipy.optimize.curve_fit(func, SIZE_LIST, avg_binary_insertion)
+
+# Plotting the data and the fitted curve
+plt.scatter(SIZE_LIST, avg_binary_insertion, label='Binary Insertion Sort')
+
+# Plot the fitted curve
+x_values2 = np.linspace(min(SIZE_LIST), max(SIZE_LIST), 100)
+fitted_curve2 = func(x_values2, *popt2)
+plt.plot(x_values2, fitted_curve2, 'r')
+plt.legend()
+plt.savefig("Insertion.vs.BinaryInsertion.5.3.jpg")
+
+#4) On average, both algorithms are essentially the same speed. However, binary insertion sort is faster by a bit
+#   due to the fact that binary insertion sort uses fewer comparisons than traditional insertion sort does.
