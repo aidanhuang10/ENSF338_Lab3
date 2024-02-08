@@ -1,7 +1,7 @@
 import sys 
-sys.setrecursionlimit(20000)
+sys.setrecursionlimit(20000000)
+import random
 import timeit
-import random 
 import numpy as np
 from matplotlib import pyplot as plt
 import scipy
@@ -22,7 +22,7 @@ def quickSort(a, low, high):
     if low < high:
         part = partition(a, low, high)
         quickSort(a, low, part - 1)
-        quickSort(a, part + 1, high)
+        quickSort(a, part, high)
 
 #Binary Search
 def binarySearch (arr, first, last, key):
@@ -36,49 +36,37 @@ def binarySearch (arr, first, last, key):
             return binarySearch(arr, mid + 1, last, key)
     return -1 #Key was not found in the array
 
-#Generating a list of size X
-def listGeneratorOfSize(size):
-    vector = [x * 0 for x in range(size)]
-    return vector
-
-#Creates empty list for calculating average time of X number(s) of inputs
-def emptyListCreator(num):
-    vector = []
-    for x in range(num):
-        vector.append([])
-    return vector
-
 #Function for fitting quadratic data curve fitting
 def func(x, a, b):
     return a * np.square(x) + b
 
-#Inputs from 10, 20, 50, 100, 200, ... to 10 mill, 20 mill, 50 mill
-input_sizes = []
-for i in range(7):
-    for number in [10, 20, 50]:
-        input_sizes.append(number * pow(10, i))
+#Shuffles List
+def shuffleList (a):
+    random.shuffle(a)
+    return a
 
-quickBinaryTime = emptyListCreator(len(input_sizes))
+# Generates Inputs from 10, 20, 50, 100, 200, ... to 10 mill, 20 mill, 50 mill       
+input_sizes = [number * pow(10, i) for i in range(7) for number in [10, 20, 50]] # List comprehension so that it is faster
+quickBinaryTime = [0 for x in range(len(input_sizes))]
 
 #Quick sort and Binary Search
-for index in input_sizes:
-    randList = listGeneratorOfSize(index)
-    targetElement = randList[0]
-    for array in quickBinaryTime:
-        for i in range(1000):
-            quickTime = timeit.timeit(lambda: quickSort(randList, 0, len(randList) - 1))
-            binaryTime = timeit.timeit(lambda: binarySearch(randList, 0, len(randList), targetElement))
-            array.append(quickTime + binaryTime)
+for i, index in enumerate(input_sizes):
+    randList = [random.randint(0,index + 1) for x in range(index)] #A list of random numbers
+    targetElement = randList[0] #Target is first index (guarantees the element being searched for is always the same)
+    quickTime = timeit.timeit(lambda: quickSort(shuffleList(randList), 0, len(randList) - 1), number=50)
+    binaryTime = timeit.timeit(lambda: binarySearch(randList, 0, len(randList), targetElement), number=50)
+    quickBinaryTime[i] = quickTime + binaryTime
+    print("Iteration for QUICK BINARY RECURSIVE#", i, "Done For INPUT_SIZE:", index)
+    # print(quickBinaryTime, end='\n')
 
-avg_quick_binary = []
-for i in range(len(input_sizes)):
-    avg_quick_binary.append(sum(quickBinaryTime[i]) / len(quickBinaryTime[i]))
+#Average Time of execution for specified size of input
+avg_quick_binary = [sum(quickBinaryTime[i]) / 1000 for i in range(len(input_sizes))]
 
 #Logrihtmic Quick sort and binary Search
 popt2, pcov2 = scipy.optimize.curve_fit(func, input_sizes, avg_quick_binary)
 
 # Plotting the data and the fitted curve
-plt.scatter(input_sizes, avg_quick_binary, label='Binary Insertion Sort')
+plt.scatter(input_sizes, avg_quick_binary, label='Worst Case Quick Sort & Binary Search')
 
 # Plot the fitted curve
 x_values2 = np.linspace(min(input_sizes), max(input_sizes), 100)
