@@ -52,7 +52,6 @@ for i, index in enumerate(INPUT_SIZE):
     quickTime = timeit.timeit(lambda: quicksort_and_binary_search(randList, targetElement), number=ITERATIONS)
     print(randList)
     quickBinaryTime.append(quickTime)
-    print("ITERATION:", i)
         
 #Calculating average time for each input size for quick sort binary search
 avg_quick_binary = [(quickBinaryTime[i] / ITERATIONS) for i in range(len(INPUT_SIZE))]
