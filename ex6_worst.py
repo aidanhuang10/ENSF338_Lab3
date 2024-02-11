@@ -1,10 +1,5 @@
-import sys 
-sys.setrecursionlimit(20000)
 import timeit
-import random 
-import numpy as np
 from matplotlib import pyplot as plt
-import scipy
 
 #Binary Search using an iterative Quick Sort process for sorting data
 def quicksort_and_binary_search(arr, key):
@@ -41,47 +36,34 @@ def quicksort_and_binary_search(arr, key):
     quicksort(arr, 0, len(arr) - 1)
     return binary_search(arr, 0, len(arr) - 1, key)
 
-#Function for fitting logrithmic data curve fitting
-def func(x, a, b):
-    return a * np.log(x) + b
-
-#Shuffles List
-def shuffleList (a):
-    random.shuffle(a)
-    return a
-
-ITERATIONS = 100 #Number of Iterations for timeit
+ITERATIONS = 100 #Number of Iterations
 
 #Inputs from 10, 20, 50, 100, 200, ... to 10 mill, 20 mill, 50 mill
-input_sizes = [number * pow(10, i) for i in range(7) for number in [10, 20, 50]] # List comprehension so that it is faster
+INPUT_SIZE = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
 
-#Making a list of empty lists of however many input sizes
-quickBinaryTime = [0] * len(input_sizes)
-
+quickBinaryTime = []
 #Loops through the element sizes for data
-for i, index in enumerate(input_sizes):
-    randList = [0] * index #A list of same elements to test special worst case for Quick Sort
+for i, index in enumerate(INPUT_SIZE):
+    #A list of same elements to test worst case for Quick Sort..
+    #When list is sorted ascending and pivot is the biggest element
+    randList = [x for x in range(index)]
     targetElement = randList[0] #Target is first element to guarantee the number picked is always in the list
-    #Appends total time to linearly search for an element X times for Y input size
-    quickTime = 0
-    #Uses for loop instead of number / repeat functions so that it does not time how long it takes to shuffle list
-    for x in range(ITERATIONS):
-        shuffleList(randList)
-        quickTime += timeit.timeit(lambda: quicksort_and_binary_search(randList, targetElement), number=1)
-    quickBinaryTime[i] = quickTime
+    print(randList)
+    quickTime = timeit.timeit(lambda: quicksort_and_binary_search(randList, targetElement), number=ITERATIONS)
+    print(randList)
+    quickBinaryTime.append(quickTime)
+    print("ITERATION:", i)
         
-#Calculating average time for each input size for linear search
-avg_quick_binary = [(quickBinaryTime[i] / ITERATIONS) for i in range(len(input_sizes))]
+#Calculating average time for each input size for quick sort binary search
+avg_quick_binary = [(quickBinaryTime[i] / ITERATIONS) for i in range(len(INPUT_SIZE))]
 
-#Logrithmic Quick sort binary Search
-popt2, pcov2 = scipy.optimize.curve_fit(func, input_sizes, avg_quick_binary)
-
-# Plotting the data and the fitted curve
-plt.scatter(input_sizes, avg_quick_binary, label='Worst Case Quick Sort & Binary Search')
-
-# Plot the fitted curve
-x_values2 = np.linspace(min(input_sizes), max(input_sizes), 100)
-fitted_curve2 = func(x_values2, *popt2)
-plt.plot(x_values2, fitted_curve2, 'r')
+plt.scatter(INPUT_SIZE, avg_quick_binary, label='Worst Case Quick Sort & Binary Search')
+plt.xlabel('Input Sizes')
+plt.ylabel('Average Time (s)')
 plt.legend()
-plt.savefig("quick_binary_worst.6.4.jpg")
+plt.savefig("WorstQuickBinary.6.5.jpg")
+
+#5) As discussed before, since linear search is already faster than sorting the data first and then searching for it,
+#   linear search would be faster than this; especially when you are incurring the worst-case performance for 
+#   quick sort. Additionally, since the target is the first element of the list, it is also the worst case for 
+#   binary search as well.

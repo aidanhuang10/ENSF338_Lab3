@@ -5,7 +5,6 @@ from matplotlib import pyplot as plt
 import scipy
 #Traditional Insertion Sort
 def insertionSort(arr):
-
     for i in range(1, len(arr)):
         key = arr[i]
         j = i-1
@@ -23,7 +22,7 @@ def binarySearch(Array, N, key):
         if (Array[mid] <= key):
             L = mid + 1
         else:
-            R = mid
+            R = mid - 1
     return L
 
 #BinaryInsertionSort
@@ -42,78 +41,58 @@ def binaryInsertionSort(Array):
         # Inserting 'key' in its correct position.
         Array[pos] = key
 
-#Generating a list of size X with random numbers in each element
-def listGeneratorOfSize(size):
-    vector = random.sample(range(0, 10000), size)
-    return vector
-
-#Creates empty list for calculating average time of X number(s) of inputs
-def emptyListCreator(num):
-    vector = []
-    for x in range(num):
-        vector.append([])
-    return vector
-
 #Function for fitting quadratic data curve fitting
 def func(x, a, b):
     return a * np.square(x) + b
 
-SIZE_LIST = [10, 20, 40, 80, 160, 320] #Sizes for sorting a certain list
-RUNS = 100  #Constant number of runs for lambda function
+SIZE_LIST = [10, 20, 40, 80, 160, 320, 640, 1280] #Sizes for sorting a certain list
+RUNS = 100  #Constant number of runs
 
-#Making a list of empty lists of however many input sizes
-time_vectors = emptyListCreator(len(SIZE_LIST))
+#Timing for both binary insertion and insertion
+binaryInsertion = []
+insertion = []
 
 #Testing binary Insertion Sorting algorithm with small but increasing input size
-for i in range(100):
-    index = 0
-    for array in time_vectors:
-        time = timeit.timeit(lambda: binaryInsertionSort(listGeneratorOfSize(SIZE_LIST[index])), number=RUNS)
-        array.append(time)
-        index += 1
+for array in SIZE_LIST:
+    #Reseting time it takes for each run with different input sizes
+    insertionTime = 0
+    binaryInsertionTime = 0
+    #Not using RUNS in number because insertion is an in-place sorting algorithm
+    #And We do not want to count the time it takes to randomize a list
+    for iterations in range(RUNS):
+        #Copy of list to ensure both algorithms uses same lists for testing
+        randList = random.sample(range(0, array), array)
+        copyOfRandList = randList.copy()
+        insertionTime += timeit.timeit(lambda: insertionSort(randList), number=1)
+        binaryInsertionTime += timeit.timeit(lambda: binaryInsertionSort(copyOfRandList), number=1)
+    binaryInsertion.append(binaryInsertionTime)
+    insertion.append(insertionTime)
 
-#Calculating average time for each input size for binary insertion sort
 avg_binary_insertion = []
-for i in range(len(SIZE_LIST)):
-    avg_binary_insertion.append(sum(time_vectors[i]) / len(time_vectors[i]))
-
-#Empty the list to use it for Insertion now
-time_vectors = emptyListCreator(len(SIZE_LIST))
-
-#Testing Insertion Sorting algorithm with small but increasing input size
-for i in range(100):
-    index = 0
-    for array in time_vectors:
-        time = timeit.timeit(lambda: insertionSort(listGeneratorOfSize(SIZE_LIST[index])), number=RUNS)
-        array.append(time)
-        index += 1
-
-#Calculating average time for each input size for insertion sort
 avg_insertion_list = []
+#Calculating average time for each input size for binary insertion sort & regular insertion sort 
 for i in range(len(SIZE_LIST)):
-    avg_insertion_list.append(sum(time_vectors[i]) / len(time_vectors[i]))
+    avg_binary_insertion.append(binaryInsertion[i] / RUNS)
+    avg_insertion_list.append(insertion[i] / RUNS)
 
 popt, pcov = scipy.optimize.curve_fit(func, SIZE_LIST, avg_insertion_list)
+popt2, pcov2 = scipy.optimize.curve_fit(func, SIZE_LIST, avg_binary_insertion)
 
 # Plotting the data and the fitted curve
 plt.scatter(SIZE_LIST, avg_insertion_list, label='Insertion Sort')
+plt.scatter(SIZE_LIST, avg_binary_insertion, label='Binary Insertion Sort')
 
 # Plot the fitted curve
 x_values = np.linspace(min(SIZE_LIST), max(SIZE_LIST), 100)
 fitted_curve = func(x_values, *popt)
+fitted_curve2 = func(x_values, *popt2)
+
 plt.plot(x_values, fitted_curve, 'b')
-
-popt2, pcov2 = scipy.optimize.curve_fit(func, SIZE_LIST, avg_binary_insertion)
-
-# Plotting the data and the fitted curve
-plt.scatter(SIZE_LIST, avg_binary_insertion, label='Binary Insertion Sort')
-
-# Plot the fitted curve
-x_values2 = np.linspace(min(SIZE_LIST), max(SIZE_LIST), 100)
-fitted_curve2 = func(x_values2, *popt2)
-plt.plot(x_values2, fitted_curve2, 'r')
+plt.plot(x_values, fitted_curve2, 'r')
+plt.xlabel('Input Sizes')
+plt.ylabel('Average Time (s)')
 plt.legend()
-plt.savefig("Insertion.vs.BinaryInsertion.5.3.jpg")
+plt.savefig("InsertionVsBinaryInsertion.5.3.jpg")
 
 #4) On average, both algorithms are essentially the same speed. However, binary insertion sort is faster by a bit
 #   due to the fact that binary insertion sort uses fewer comparisons than traditional insertion sort does.

@@ -26,6 +26,7 @@ def BinarySearch (arr, first, last, key):
             return BinarySearch(arr, mid + 1, last, key)
     return -1 #Key was not found in the array
 
+#Uses a percentage of the data as the midpoint
 # def percentiles():
 #     numbers = [round(0.1 * i, 1) for i in range(1, 10)]
 #     return numbers
@@ -33,19 +34,19 @@ def BinarySearch (arr, first, last, key):
 # mid_points = percentiles()
 
 #Open and read json file
-with open('./ENSF338_Lab3/ex7tasks.json', 'r') as f:
+with open('ex7tasks.json', 'r') as f:
     tasks = json.load(f)
 
-with open('./ENSF338_Lab3/ex7data.json', 'r') as g:
+with open('ex7data.json', 'r') as g:
     data = json.load(g)
 
 avg_selected_time = []
 avg_regular_time = []
-for target in tasks:
-    #Uses the key as the mid point of division  
+for i, target in enumerate(tasks):
+    #Uses the target as the midpoint
     selectedMiddleTime = timeit.timeit(lambda: selectedMidPointBinarySearch(data, 0, len(data) - 1, target, target), number=1)
-    regularTime = timeit.timeit(lambda: BinarySearch(data, 0, len(data) - 1, target), number=1)
     avg_selected_time.append(selectedMiddleTime)
+    regularTime = timeit.timeit(lambda: BinarySearch(data, 0, len(data) - 1, target), number=1)
     avg_regular_time.append(regularTime)
     
 # Plotting
@@ -57,6 +58,9 @@ plt.ylabel('Average Time (s)')
 plt.title('Average Search Time for Each Target using Binary Search Regular VS Selected Mid Point')
 plt.grid(True)
 plt.legend()
-plt.show()
+plt.savefig("RegularBinaryVsSelectedMidBinary.jpg")
 
-    
+# 4) Yes, your choice of the initial midpoint matters a lot. By picking somewhere else that isn't the middle
+#    you risk possibly getting the worst case scenario of binary search, or possibly uneven spliting 
+#    for your data. By not picking the middle, you are increasing the search space. That's why picking
+#    the middle is important; as it decreases your search space by half.

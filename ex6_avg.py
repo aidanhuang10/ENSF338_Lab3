@@ -1,10 +1,6 @@
-import sys 
-sys.setrecursionlimit(20000)
 import timeit
 import random 
-import numpy as np
 from matplotlib import pyplot as plt
-import scipy
 #Linear Search 
 def linearSearch (arr, n, key):
     for i in range(n):
@@ -47,29 +43,24 @@ def quicksort_and_binary_search(arr, key):
     quicksort(arr, 0, len(arr) - 1)
     return binary_search(arr, 0, len(arr) - 1, key)
 
-#Function for fitting logrithmic data curve fitting
-def func(x, a, b):
-    return a * np.log(x) + b
-
 #Shuffles List
 def shuffleList (a):
     random.shuffle(a)
     return a
 
-ITERATIONS = 100 #Number of Iterations for timeit
+ITERATIONS = 100 #Number of Iterations
 
-#Inputs from 10, 20, 50, 100, 200, ... to 10 mill, 20 mill, 50 mill
-input_sizes = [number * pow(10, i) for i in range(7) for number in [10, 20, 50]] # List comprehension so that it is faster
+#Number of elements for each list
+INPUT_SIZE = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
 
 #Making a list of empty lists of however many input sizes
-linearSearchTime = [0] * len(input_sizes)
-quickBinaryTime = [0] * len(input_sizes)
+linearSearchTime = []
+quickBinaryTime = []
 
 #Loops through the element sizes for data
-for i, index in enumerate(input_sizes):
+for index in INPUT_SIZE:
     randList = random.sample(range(0, index), index) #A list of random numbers
     targetElement = randList[0] #Target is first element to guarantee the number picked is always in the list
-    #Appends total time to linearly search for an element X times for Y input size
     quickTime = 0
     linearTime = 0 
     #Uses for loop instead of number / repeat functions so that it does not time how long it takes to shuffle list
@@ -77,31 +68,24 @@ for i, index in enumerate(input_sizes):
         shuffleList(randList)
         linearTime += timeit.timeit(lambda: linearSearch(randList, index, targetElement), number=1)
         quickTime += timeit.timeit(lambda: quicksort_and_binary_search(randList, targetElement), number=1)
-    linearSearchTime[i] = linearTime
-    quickBinaryTime[i] = quickTime
+    linearSearchTime.append(linearTime)
+    quickBinaryTime.append(quickTime)
         
+avg_linear = []
+avg_quick_binary = []
 #Calculating average time for each input size for linear search
-avg_linear = [(linearSearchTime[i] / ITERATIONS) for i in range(len(input_sizes))]
-avg_quick_binary = [(quickBinaryTime[i] / ITERATIONS) for i in range(len(input_sizes))]
+for i in range(len(INPUT_SIZE)):
+    avg_linear.append(linearSearchTime[i] / ITERATIONS)
+    avg_quick_binary.append(quickBinaryTime[i] / ITERATIONS)
 
 #Linear data curve fitting
-slope, intercept = np.polyfit(input_sizes, avg_linear, 1)
-plt.scatter(input_sizes, avg_linear, label='Linear Search Avg')
-linevalues = [slope * x + intercept for x in input_sizes]
-plt.plot(input_sizes, linevalues, 'r')
+plt.scatter(INPUT_SIZE, avg_linear, label='Linear Search Avg')
+plt.scatter(INPUT_SIZE, avg_quick_binary, label='Quick Sort & Binary Search Avg')
+plt.xlabel('Input Sizes')
+plt.ylabel('Average Time (s)')
 plt.legend()
-plt.savefig("linear_avg.6.4.jpg")
-plt.clf() #Clear plot for next plot
+plt.savefig("LinearVsQuickBinary.6.4.jpg")
 
-#Logrithmic Quick sort binary Search
-popt2, pcov2 = scipy.optimize.curve_fit(func, input_sizes, avg_quick_binary)
-
-# Plotting the data and the fitted curve
-plt.scatter(input_sizes, avg_quick_binary, label='Quick Sort & Binary Search Avg')
-
-# Plot the fitted curve
-x_values2 = np.linspace(min(input_sizes), max(input_sizes), 100)
-fitted_curve2 = func(x_values2, *popt2)
-plt.plot(x_values2, fitted_curve2, 'r')
-plt.legend()
-plt.savefig("quick_binary_avg.6.4.jpg")
+#4) Clearly linear search is significantly faster than sorting data first using quick sort
+#   and then applying binary search. Searching is always faster than sorting, and therefore,
+#   the output is expected. Additionally, linear search is best for when the data is randomized
