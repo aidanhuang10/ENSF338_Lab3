@@ -3,6 +3,10 @@
 #for average case number of swaps we'll say that every second comparison is a swap, therefore the equation = n(n-1)/4
 import random
 from matplotlib import pyplot as plt
+import numpy as np
+import scipy
+def func(x, a, b):
+    return a * np.square(x) + b
 def bubbleSort(a,len):
     swaps = 0
     comparisons = 0
@@ -32,16 +36,24 @@ for x in choices:
     comparisons = comparisons/100
     finalSwaps.append(swaps)
     finalComparisons.append(comparisons)
+popt, pcov = scipy.optimize.curve_fit(func, choices, finalComparisons)
+popt2, pcov2 = scipy.optimize.curve_fit(func, choices, finalSwaps)
+x_values = np.linspace(min(choices), max(choices), 100)
+fitted_curve = func(x_values, *popt)
+fitted_curve2 = func(x_values, *popt2)
 plt.scatter(choices,finalComparisons)
+plt.plot(x_values, fitted_curve)
 plt.xlabel("Number of Elements")
 plt.ylabel("Number of Comparisons")
 plt.title("Comparisons vs Elements")
 plt.savefig("ex3.comparisonsVsElements.png")
 plt.clf()
 plt.scatter(choices,finalSwaps)
+plt.plot(x_values, fitted_curve2)
 plt.xlabel("Number of Elements")
 plt.ylabel("Number of Swaps")
 plt.title("Swaps vs Elements")
 plt.savefig("ex3.swapsVsElements.png")
 plt.clf()
+#4: Both fitted curves match our complexity analysis with quadratic curves successfully modeling the results
         
