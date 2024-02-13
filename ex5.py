@@ -92,6 +92,7 @@ plt.plot(x_values, fitted_curve2, 'r')
 plt.xlabel('Input Sizes')
 plt.ylabel('Average Time (s)')
 plt.legend()
+plt.show()
 plt.savefig("InsertionVsBinaryInsertion.5.3.jpg")
 
 #4) On average, both algorithms are essentially the same speed. However, binary insertion sort is faster by a bit
