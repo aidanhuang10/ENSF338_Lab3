@@ -84,6 +84,7 @@ plt.scatter(INPUT_SIZE, avg_quick_binary, label='Quick Sort & Binary Search Avg'
 plt.xlabel('Input Sizes')
 plt.ylabel('Average Time (s)')
 plt.legend()
+plt.show()
 plt.savefig("LinearVsQuickBinary.6.4.jpg")
 
 #4) Clearly linear search is significantly faster than sorting data first using quick sort
