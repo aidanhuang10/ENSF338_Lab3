@@ -26,13 +26,6 @@ def BinarySearch (arr, first, last, key):
             return BinarySearch(arr, mid + 1, last, key)
     return -1 #Key was not found in the array
 
-#Uses a percentage of the data as the midpoint
-# def percentiles():
-#     numbers = [round(0.1 * i, 1) for i in range(1, 10)]
-#     return numbers
-
-# mid_points = percentiles()
-
 #Open and read json file
 with open('ex7tasks.json', 'r') as f:
     tasks = json.load(f)
