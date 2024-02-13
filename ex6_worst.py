@@ -60,6 +60,7 @@ plt.scatter(INPUT_SIZE, avg_quick_binary, label='Worst Case Quick Sort & Binary 
 plt.xlabel('Input Sizes')
 plt.ylabel('Average Time (s)')
 plt.legend()
+plt.show()
 plt.savefig("WorstQuickBinary.6.5.jpg")
 
 #5) As discussed before, since linear search is already faster than sorting the data first and then searching for it,
