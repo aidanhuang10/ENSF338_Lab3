@@ -95,6 +95,7 @@ plt.plot(x_values, fitted_curve)
 plt.xlabel("Number of Elements")
 plt.ylabel("Number of Comparisons")
 plt.title("Comparisons vs Elements")
+plt.show()
 plt.savefig("ex4.comparisonsVsElements.png")
 plt.clf()
 #4: The results match our complexity analysis with a quadratic curve modling the results of comparisons against number of elements in the worst case, similar to that of the average case of bubble sort
