@@ -51,6 +51,7 @@ plt.ylabel('Average Time (s)')
 plt.title('Average Search Time for Each Target using Binary Search Regular VS Selected Mid Point')
 plt.grid(True)
 plt.legend()
+plt.show()
 plt.savefig("RegularBinaryVsSelectedMidBinary.jpg")
 
 # 4) Yes, your choice of the initial midpoint matters a lot. By picking somewhere else that isn't the middle
